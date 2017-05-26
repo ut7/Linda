@@ -3,24 +3,44 @@
 <title>Job offers</title>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
-<body>
-</body>
 <script>
-var canvas = d3.select("body").append("svg").attr("width", 500).attr("height", 200);
-var donnees = [ 100, 50, 20];
-var widthScale = d3.scale.linear()
-                .domain([0, 100])
-                .range([0, 500]);
-var heightScale = d3.scale.linear()
-                .domain([0, 100])
-                .range([0, 200]);
-var colorScale = d3.scale.linear()
-                .domain([0, 100])
-                .range(["red", "#3399FF"]);
-var rectangles = canvas.selectAll("rect")
-                .data(donnees).enter()
-                                      .append("rect")
-                                      .attr("width", function(i) { return widthScale(i);})
-                                      .attr("height", function(i) { return heightScale(i);})
-                                      .attr("fill", function(i) { return colorScale(i);})
+
+window.onload = function () { getDataFile(andShowThem) };
+
+const getDataFile = function (callback) {
+  var client = new XMLHttpRequest();
+  client.onload = function(a,b){
+    if(this.status == 200) {
+      callback(this.response);
+    } else {
+      console.log("error");
+    }
+  }
+  client.open("GET", "data.json");
+  client.responseType = "json";
+  client.send();
+}
+
+const andShowThem = function (data) {
+  var donnees = [data.offreTotal, data.offreDev, data.offreDevJunior];
+
+  var canvas = d3.select("body").append("svg").attr("width", 500).attr("height", 200);
+  var widthScale = d3.scale.linear()
+    .domain([0, 100])
+    .range([0, 500]);
+  var heightScale = d3.scale.linear()
+    .domain([0, 100])
+    .range([0, 200]);
+  var colorScale = d3.scale.linear()
+    .domain([0, 100])
+    .range(["red", "#3399FF"]);
+  var rectangles = canvas.selectAll("rect")
+    .data(donnees).enter()
+    .append("rect")
+    .attr("width", function(i) { return widthScale(i);})
+    .attr("height", function(i) { return heightScale(i);})
+    .attr("fill", function(i) { return colorScale(i);})
+
+}
+
 </script>
